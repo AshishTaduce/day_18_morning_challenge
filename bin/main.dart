@@ -18,7 +18,31 @@
 // ➞ [["spot", "see"], []]
 /// "see" was encountered first but "spot" became an acquaintance earlier.
 
+List<List<String>> noStrangers(String line) {
+  String toCheck = CleanString(line);
+  List wordsList = toCheck.split(' ');
+  List<String> acqList = [];
+  List<String> friendsList = [];
+  Map<String, int> wordCount = {};
+  wordsList.forEach((wordX) {
+    wordCount[wordX] = wordCount.containsKey(wordX) ? wordCount[wordX] + 1 : 1;
+    wordCount.forEach((key, val) {
+      if (wordCount[key] >= 3) {
+        acqList.add(key);
+      }
+    });
+  });
+  wordCount.forEach((key, val) {
+    if (wordCount[key] >= 5) {
+      friendsList.add(key);
+    }
+  });
+  return [acqList.toSet().toList(), friendsList.toSet().toList()];
+}
 
+String CleanString(String x) {
+  return x.replaceAll('.', '').replaceAll('!', '').replaceAll(',', '');
+}
 
 // Challenge 3
 // Rhyme Time
@@ -27,7 +51,47 @@
 // word from each sentence contains the same vowels.
 // Example:
 // doesRhyme("Sam I am!", "Green eggs and ham.") ➞ true
+bool doesRhyme(String x, String y) {
+  x = CleanString(x);
+  y = CleanString(y);
+  List splitXString = x.split(' ');
+  List splitYString = y.split(' ');
+  List xVowels = IndexOfVowels(splitXString.last);
+//  print(xVowels);
+  List yVowels = IndexOfVowels(splitYString.last);
+//  print(yVowels);
+  if (AreListEqual(xVowels, yVowels)) {
+    return true;
+  } else {
+    return false;
+  }
+}
 
+List IndexOfVowels(String x) {
+  List indexList = [];
+  for (int i = 0; i < x.length; i++) {
+    if (x[i] == 'a' ||
+        x[i] == 'e' ||
+        x[i] == 'i' ||
+        x[i] == 'o' ||
+        x[i] == 'u') {
+      indexList.add(x[i]);
+    }
+  }
+  return indexList;
+}
+
+bool AreListEqual(List x, List y) {
+  if (x.length != y.length) {
+    return false;
+  }
+  for (int i = 0; i < x.length; i++) {
+    if (x[i] != y[i]) {
+      return false;
+    }
+  }
+  return true;
+}
 
 // Challenge 4
 // Do All Bigrams (2 character words) Exist?
@@ -38,6 +102,31 @@
 //
 // Examples
 // canFind(["at", "be", "th", "au"], ["beautiful", "the", "hat"]) ➞ true
+
+bool canFind(List list1, List list2) {
+  bool result = true;
+  for (int i = 0; i < list2.length; i++) {
+    if (!CanFindInWord(list1, list2[i])) {
+//      print("fount ${list1[i]} in ${list2[i]}");
+      result = false;
+    }
+  }
+  return result;
+}
+
+bool CanFindInWord(List x, String y) {
+  for (int i = 0; i < x.length; i++) {
+    if (y.contains(x[i])) {
+//      print('found ${x[i]} in $y');
+      return true;
+    }
+  }
+  return false;
+}
+
 main() {
+  print(noStrangers("See Spot run. See Spot jump. Spot likes jumping. See Spot fly."));
+  print(doesRhyme("Sam I am!", "Green eggs and ham."));
+  print(canFind(["at", "be", "th", "au"], ["beautiful", "the", "hat", 'xyz']));
 
 }
